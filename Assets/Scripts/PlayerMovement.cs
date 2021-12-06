@@ -3,7 +3,13 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 5.0f;
-    
+    private CharacterController controller;
+
+    private void Start()
+    {
+        controller = GameObject.Find("First Person Player").GetComponent<CharacterController>();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -11,10 +17,10 @@ public class PlayerMovement : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         
-        Vector3 movement = new Vector3(horizontal, 0.0f, vertical);
-       
+        Vector3 movement = transform.right * horizontal + transform.forward * vertical;
+
         // Update player position
-        transform.position += movement * (speed * Time.deltaTime);
+        controller.Move(movement * (speed * Time.deltaTime));
         
         // Jump with espace
         if (Input.GetKeyDown(KeyCode.Space))
