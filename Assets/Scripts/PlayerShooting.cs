@@ -3,17 +3,14 @@ using UnityEngine.Assertions;
 
 public class PlayerShooting : MonoBehaviour
 {
-    // Camera gameobject
     private Camera thisCamera;
     
-    // Start is called before the first frame update
     void Start()
     {
         thisCamera = Camera.main;
         Assert.IsNotNull(thisCamera);
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
         // if the left mouse button is not pressed, return

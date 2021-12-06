@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    private const float mouseSensitivity = 100f;
+    private const float mouseSensitivity = 200f;
+    
     private Transform playerBody;
     private float xRotation = 0f;
 

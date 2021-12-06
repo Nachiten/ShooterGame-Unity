@@ -2,30 +2,56 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5.0f;
+    private const float speed = 8.0f;
+    private const float gravity = -19.62f;
+
+    public LayerMask groundMask;
+
+    private Transform groundCheck;
+    private const float groundDistance = 0.4f;
+    private const float jumpHeight = 3.0f;
+    private bool isGrounded;
+    
+    private Vector3 velocity;
     private CharacterController controller;
 
     private void Start()
     {
-        controller = GameObject.Find("First Person Player").GetComponent<CharacterController>();
+        controller = GetComponent<CharacterController>();
+        groundCheck = transform.Find("GroundCheck");
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // Check if player is grounded
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+    
+        // Reset y velocity if player is grounded
+        if (isGrounded && velocity.y < 0)
+            velocity.y = -2f;
+        
         // Create player movement
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         
+        // Generate movement vector
         Vector3 movement = transform.right * horizontal + transform.forward * vertical;
 
-        // Update player position
-        controller.Move(movement * (speed * Time.deltaTime));
+        float finalSpeed = speed;
         
-        // Jump with espace
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            GetComponent<Rigidbody>().AddForce(Vector3.up * 10, ForceMode.Impulse);
-        }
+        if (Input.GetKey(KeyCode.LeftShift))
+            finalSpeed *= 2;
+        
+        // Move acording to x and z velocity
+        controller.Move(movement * (finalSpeed * Time.deltaTime));
+        
+        if (Input.GetButtonDown("Jump") && isGrounded)
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        
+        // Add gravity to the velocity
+        velocity.y += gravity * Time.deltaTime;
+
+        // Move acording to y velocity
+        controller.Move(velocity * Time.deltaTime);
     }
 }
