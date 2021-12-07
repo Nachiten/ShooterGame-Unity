@@ -3,8 +3,9 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float speed = 10.0f;
-    public float gravity = -19.62f;
+    public float gravity = -9.8f * 2f;
     public float jumpHeight = 2.4f;
+    public float runningMultiplier = 2f;
     
     public LayerMask groundMask;
 
@@ -41,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         float finalSpeed = speed;
         
         if (Input.GetKey(KeyCode.LeftShift))
-            finalSpeed *= 2;
+            finalSpeed *= runningMultiplier;
         
         // Move acording to x and z velocity
         controller.Move(movement * (finalSpeed * Time.deltaTime));
