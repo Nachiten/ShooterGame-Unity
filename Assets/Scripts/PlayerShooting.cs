@@ -23,14 +23,7 @@ public class PlayerShooting : MonoBehaviour
         // if raycast hits a target with tag "enemy"
         if (Physics.Raycast(ray, out var hit, 100) && hit.transform.CompareTag("Enemy"))
         {
-            // log the hit
-            Debug.Log("You hit an enemy!!!");
+            hit.transform.GetComponent<EnemyColliderManager>().getHit();
         }
-        else
-        {
-            // Didnt hit an enemy
-            Debug.Log("You did not hit an enemy.");
-        }
-
     }
 }
