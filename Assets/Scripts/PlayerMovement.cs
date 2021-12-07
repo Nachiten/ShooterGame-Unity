@@ -2,14 +2,15 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private const float speed = 10.0f;
-    private const float gravity = -19.62f;
-
+    public float speed = 10.0f;
+    public float gravity = -19.62f;
+    public float jumpHeight = 2.4f;
+    
     public LayerMask groundMask;
 
     private Transform groundCheck;
     private const float groundDistance = 0.4f;
-    private const float jumpHeight = 2.4f;
+   
     private bool isGrounded;
     
     private Vector3 velocity;
