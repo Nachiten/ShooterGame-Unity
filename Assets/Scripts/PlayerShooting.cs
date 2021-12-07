@@ -4,6 +4,7 @@ using UnityEngine.Assertions;
 public class PlayerShooting : MonoBehaviour
 {
     private Camera thisCamera;
+    private float shootingRange = 50f;
     
     void Start()
     {
@@ -20,8 +21,11 @@ public class PlayerShooting : MonoBehaviour
         // shoot a ray
         Ray ray = thisCamera.ScreenPointToRay(Input.mousePosition);
         
+        // draw the ray
+        Debug.DrawRay(ray.origin, ray.direction * shootingRange, Color.green, 1);
+        
         // if raycast hits a target with tag "enemy"
-        if (Physics.Raycast(ray, out var hit, 100) && hit.transform.CompareTag("Enemy"))
+        if (Physics.Raycast(ray, out var hit, shootingRange) && hit.transform.CompareTag("Enemy"))
         {
             hit.transform.GetComponent<EnemyColliderManager>().getHit();
         }

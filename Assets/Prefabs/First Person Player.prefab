@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 3052702487429999722}
   - component: {fileID: 3052702487429999724}
   - component: {fileID: 3052702487429999725}
+  - component: {fileID: 6526955068254154690}
   m_Layer: 6
   m_Name: First Person Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -83,6 +84,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9aa51a6a8f60a7f498f1a9de7b3520e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6526955068254154690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3052702487429999721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c56c47814bd44f45be769dd0628cd2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &3052702488120236681
@@ -318,8 +331,6 @@ GameObject:
   - component: {fileID: 3052702489240028083}
   - component: {fileID: 3052702489240028085}
   - component: {fileID: 3052702489240028084}
-  - component: {fileID: 7393816751549595062}
-  - component: {fileID: 7008267430217680191}
   m_Layer: 6
   m_Name: Cylinder
   m_TagString: Untagged
@@ -390,29 +401,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &7393816751549595062
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3052702489240028082}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &7008267430217680191
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3052702489240028082}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c56c47814bd44f45be769dd0628cd2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
