@@ -3,8 +3,8 @@ using UnityEngine.AI;
 
 public class EnemyNavMesh : MonoBehaviour
 {
-    public float distanteToFollow = 10f;
-    private GameObject player;
+    public float distanteToFollow = 70f;
+    private Transform player;
     
     // create navmesh agent
     private NavMeshAgent agent;
@@ -12,16 +12,14 @@ public class EnemyNavMesh : MonoBehaviour
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        player = GameObject.Find("First Person Player");
+        player = GameObject.Find("First Person Player").GetComponent<Transform>();
     }
 
     private void Update()
     {
         // if player is in range
-        if (Vector3.Distance(transform.position, player.transform.position) < distanteToFollow)
-        {
+        if (Vector3.Distance(transform.position, player.position) < distanteToFollow)
             // set destination to player
-            agent.SetDestination(player.transform.position);
-        }
+            agent.destination = player.position;
     }
 }

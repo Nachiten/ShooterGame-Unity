@@ -448,7 +448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eed1ebd6dfe7d5442a0eb1bd6519bd47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distanteToFollow: 35
+  distanteToFollow: 70
 --- !u!114 &2170365598465541812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -461,4 +461,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f33b878b05f3bf747acdff89ae1ed1a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  life: 1

@@ -4,7 +4,7 @@ using UnityEngine.Assertions;
 public class PlayerShooting : MonoBehaviour
 {
     private Camera thisCamera;
-    private float shootingRange = 50f;
+    public float shootingRange = 50f;
     
     void Start()
     {
