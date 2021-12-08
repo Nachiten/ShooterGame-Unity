@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 8
-  gravity: -19.62
+  gravity: -22
   jumpHeight: 2.4
   runningMultiplier: 1.75
   groundMask:
@@ -86,6 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aa51a6a8f60a7f498f1a9de7b3520e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shootingRange: 50
 --- !u!114 &6526955068254154690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,7 +210,7 @@ GameObject:
   - component: {fileID: 3052702488338356720}
   m_Layer: 6
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -333,7 +334,7 @@ GameObject:
   - component: {fileID: 3052702489240028084}
   m_Layer: 6
   m_Name: Cylinder
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

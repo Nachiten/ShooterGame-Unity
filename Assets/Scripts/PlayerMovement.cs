@@ -41,12 +41,14 @@ public class PlayerMovement : MonoBehaviour
 
         float finalSpeed = speed;
         
-        if (Input.GetKey(KeyCode.LeftShift))
+        // Check if player is running
+        if (Input.GetKey(KeyCode.LeftShift) && isGrounded)
             finalSpeed *= runningMultiplier;
         
         // Move acording to x and z velocity
         controller.Move(movement * (finalSpeed * Time.deltaTime));
         
+        // Check if player is jumping
         if (Input.GetButtonDown("Jump") && isGrounded)
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         
