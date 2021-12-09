@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -16,11 +17,18 @@ public class PlayerMovement : MonoBehaviour
     
     private Vector3 velocity;
     private CharacterController controller;
-
+    
+    private PlayerLifeManager lifeManager;
+    
     private void Start()
     {
-        controller = GetComponent<CharacterController>();
         groundCheck = transform.Find("GroundCheck");
+        controller = GetComponent<CharacterController>();
+        lifeManager = GetComponent<PlayerLifeManager>();
+        
+        Assert.IsNotNull(groundCheck);
+        Assert.IsNotNull(controller);
+        Assert.IsNotNull(lifeManager);
     }
 
     void Update()
@@ -41,9 +49,18 @@ public class PlayerMovement : MonoBehaviour
 
         float finalSpeed = speed;
         
-        // Check if player is running
-        if (Input.GetKey(KeyCode.LeftShift) && isGrounded)
+        // If player presses shift, is grounded and has stamina, run
+        if (Input.GetKey(KeyCode.LeftShift) && isGrounded && lifeManager.canRun())
+        {
             finalSpeed *= runningMultiplier;
+            lifeManager.setIsRunning(true);
+        }
+        
+        // If player presses up shift, stop running
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            lifeManager.setIsRunning(false);
+        }
         
         // Move acording to x and z velocity
         controller.Move(movement * (finalSpeed * Time.deltaTime));
