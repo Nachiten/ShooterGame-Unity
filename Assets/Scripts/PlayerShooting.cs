@@ -27,7 +27,7 @@ public class PlayerShooting : MonoBehaviour
         // if raycast hits a target with tag "enemy"
         if (Physics.Raycast(ray, out var hit, shootingRange) && hit.transform.CompareTag("Enemy"))
         {
-            hit.transform.GetComponent<EnemyColliderManager>().getHit();
+            hit.transform.GetComponent<EnemyColliderManager>().getHit(ray.direction);
         }
     }
 }

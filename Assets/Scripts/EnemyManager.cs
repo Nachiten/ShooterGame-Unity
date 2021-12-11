@@ -25,22 +25,28 @@ public class EnemyManager : MonoBehaviour
     {
         damageText.enabled = false;
     }
+
+    private const float moveTime = 0.5f;
+    private const float moveMultiplier = 0.8f;
     
-    public void takeDamage(float damageTaken)
+    public void takeDamage(float damageTaken, Vector3 direction)
     {
         // lose life
         life-= damageTaken;
         
         if (life <= 0)
         {
-            Debug.Log("Me muero pq no tengo mas vida");
             destroyed = true;
             Destroy(gameObject);
             return;
         }
         
-        Debug.Log("Ahr q no mori");
         showDamage(damageTaken);
+
+        direction *= moveMultiplier;
+        direction.y = 0;
+        
+        transform.DOMove(transform.position + direction, moveTime).SetEase(Ease.OutExpo);
     }
 
     private void showDamage(float damageTaken)

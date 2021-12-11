@@ -4,9 +4,9 @@ public class EnemyColliderManager : MonoBehaviour
 {
     public float damageTaken;
 
-    public void getHit()
+    public void getHit(Vector3 direction)
     {
-        transform.parent.GetComponent<EnemyManager>().takeDamage(damageTaken);
+        transform.parent.GetComponent<EnemyManager>().takeDamage(damageTaken, direction);
     }
     
     private void OnTriggerEnter(Collider other)
