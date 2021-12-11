@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -5,29 +6,27 @@ using UnityEngine.Assertions;
 
 public class EnemyManager : MonoBehaviour
 {
-    private const float shootingRange = 1.5f, totalCooldown = 2f, animationTime = 0.1f, showTime = 0.8f;
+    private const float shootingRange = 1.5f, totalCooldown = 2f, animationTime = 0.6f;
     
     private float cooldownLeft = 2f, life = 4;
-    private bool isInCooldown;
+    
+    private bool isInCooldown, destroyed;
 
-    private TMP_Text damageText;
-
-    private bool destroyed;
+    private Transform textTemplate;
 
     private void Awake()
     {
-        damageText = transform.Find("Damage").GetComponent<TMP_Text>();
+        textTemplate = transform.Find("Damage").GetComponent<Transform>();
         
-        Assert.IsNotNull(damageText);
+        Assert.IsNotNull(textTemplate);
     }
 
     private void Start()
     {
-        damageText.enabled = false;
+        textTemplate.gameObject.SetActive(false);
     }
 
-    private const float moveTime = 0.5f;
-    private const float moveMultiplier = 0.8f;
+    private const float moveTime = 0.5f, moveMultiplier = 0.8f;
     
     public void takeDamage(float damageTaken, Vector3 direction)
     {
@@ -41,7 +40,7 @@ public class EnemyManager : MonoBehaviour
             return;
         }
         
-        showDamage(damageTaken);
+        showDamage(damageTaken, direction);
 
         direction *= moveMultiplier;
         direction.y = 0;
@@ -49,32 +48,43 @@ public class EnemyManager : MonoBehaviour
         transform.DOMove(transform.position + direction, moveTime).SetEase(Ease.OutExpo);
     }
 
-    private void showDamage(float damageTaken)
+    private void showDamage(float damageTaken, Vector3 direction)
     {
         if (destroyed)
             return;
-        
-        damageText.text = "-" + damageTaken;
-        damageText.enabled = true;
+
+        Transform damageText = Instantiate(textTemplate, transform);
+
+        damageText.position = textTemplate.position;
+        damageText.forward = direction;
+
+        damageText.GetComponent<TMP_Text>().text = "-" + damageTaken;
+        damageText.gameObject.SetActive(true);
 
         // En 0.7 segundos muestro el texto
-        damageText.gameObject.transform.DOLocalMoveY(1.17f, animationTime).onComplete += hideDamage;
+        damageText.DOLocalMoveY(1.7f, animationTime)
+            .OnUpdate( () => setAlpha(damageText))
+            .OnComplete( () => hideDamage(damageText));
+    }
+    
+    private void setAlpha(Transform text)
+    {
+        if (destroyed)
+            return;
+
+        float currentAlpha = 1 - Math.Abs((text.localPosition.y - 1.3f) / 0.5f);
+
+        // El alpha se setea al modulo de la diferencia entre la posicion central y actual
+        text.GetComponent<TextMeshPro>().alpha = currentAlpha;
     }
 
-    private void hideDamage()
+    private void hideDamage(Transform theTransform)
     {
         if (destroyed)
             return;
         
-        // Espero 0.8f segundos para que se oculte, y lo oculto en el mismo tiempo que se motro
-        damageText.gameObject.transform.DOLocalMoveY(0.78f, animationTime).SetDelay(showTime).onComplete += () =>
-        {
-            if (destroyed)
-                return;
-            
-            // Se desactiva el objeto
-            damageText.enabled = false;
-        };
+        // Se desactiva el objeto
+        Destroy(theTransform.gameObject);
     }
 
     private void Update()
