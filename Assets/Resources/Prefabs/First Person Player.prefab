@@ -86,7 +86,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aa51a6a8f60a7f498f1a9de7b3520e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shootingRange: 50
+  shootingRange: 30
 --- !u!114 &6526955068254154690
 MonoBehaviour:
   m_ObjectHideFlags: 0

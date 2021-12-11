@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -10,17 +12,48 @@ public class EnemyManager : MonoBehaviour
     private const float totalCooldown = 2f;
     private float cooldownLeft = 2f;
     private bool isInCooldown;
-    
-    public void takeDamage(float damage)
+
+    private TMP_Text damageText;
+
+    private void Awake()
+    {
+        damageText = transform.Find("Damage").GetComponent<TMP_Text>();
+        
+        Assert.IsNotNull(damageText);
+    }
+
+    private void Start()
+    {
+        damageText.enabled = false;
+    }
+
+    private const float showTime = 0.7f;
+
+    public void takeDamage(float damageTaken)
     {
         // lose life
-        life-= damage;
-        
-        Debug.Log( "Recibi " + damage + " de daño");
-        Debug.Log("Vida restante: " + life);
+        life-= damageTaken;
         
         if (life <= 0)
+        {
             Destroy(gameObject);
+            return;
+        }
+        
+        showDamage(damageTaken);
+    }
+
+    private void showDamage(float damageTaken)
+    {
+        damageText.text = "-" + damageTaken;
+        damageText.enabled = true;
+        
+        LeanTween.value(0, showTime, showTime).setOnComplete(hideDamage);
+    }
+
+    private void hideDamage()
+    {
+        damageText.enabled = false;
     }
 
     private void Update()
