@@ -6,17 +6,18 @@ using UnityEngine.Assertions;
 
 public class EnemyManager : MonoBehaviour
 {
-    private const float shootingRange = 1.5f, totalCooldown = 2f, animationTime = 0.6f;
+    private const float totalLifes = 4, shootingRange = 1.5f, totalCooldown = 2f, animationTime = 0.5f;
     
-    private float cooldownLeft = 2f, life = 4;
+    private float cooldownLeft, life;
     
     private bool isInCooldown, destroyed;
 
-    private Transform textTemplate;
+    private Transform textTemplate, player;
 
     private void Awake()
     {
         textTemplate = transform.Find("Damage").GetComponent<Transform>();
+        player = GameObject.Find("First Person Player").transform;
         
         Assert.IsNotNull(textTemplate);
     }
@@ -24,23 +25,30 @@ public class EnemyManager : MonoBehaviour
     private void Start()
     {
         textTemplate.gameObject.SetActive(false);
+        life = totalLifes;
     }
 
     private const float moveTime = 0.5f, moveMultiplier = 0.8f;
-    
+
     public void takeDamage(float damageTaken, Vector3 direction)
     {
+        Debug.Log("Take damage");
+
         // lose life
         life-= damageTaken;
         
         if (life <= 0)
         {
             destroyed = true;
+            
+            // Kill all animations asociated to this gameobject
+            transform.DOKill();
+
             Destroy(gameObject);
             return;
         }
         
-        showDamage(damageTaken, direction);
+        showDamage(damageTaken);
 
         direction *= moveMultiplier;
         direction.y = 0;
@@ -48,17 +56,19 @@ public class EnemyManager : MonoBehaviour
         transform.DOMove(transform.position + direction, moveTime).SetEase(Ease.OutExpo);
     }
 
-    private void showDamage(float damageTaken, Vector3 direction)
+    private void showDamage(float damageTaken)
     {
         if (destroyed)
             return;
 
         Transform damageText = Instantiate(textTemplate, transform);
 
+        damageText.gameObject.SetActive(false);
+        
         damageText.position = textTemplate.position;
-        damageText.forward = direction;
-
+        damageText.LookAt(player);
         damageText.GetComponent<TMP_Text>().text = "-" + damageTaken;
+        
         damageText.gameObject.SetActive(true);
 
         // En 0.7 segundos muestro el texto
@@ -103,8 +113,7 @@ public class EnemyManager : MonoBehaviour
             
             // reset cooldown if it finished
             isInCooldown = false;
-            cooldownLeft = totalCooldown;
-            
+
             return;
         }
         
@@ -115,6 +124,7 @@ public class EnemyManager : MonoBehaviour
         Debug.DrawRay(transform.position, transform.forward * shootingRange, Color.red, 2f);
 
         isInCooldown = true;
+        cooldownLeft = totalCooldown;
         hit.collider.gameObject.GetComponent<PlayerLifeManager>().loseLife(1);
     }
 }
