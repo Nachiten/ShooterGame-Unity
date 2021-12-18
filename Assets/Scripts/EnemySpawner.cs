@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public Transform enemy;
+    public Transform enemyFast, enemyNormal, enemySlow;
     
     private float totalCooldown, currentCoodlown;
     private const float spawningDistance = 41;
@@ -21,6 +21,17 @@ public class EnemySpawner : MonoBehaviour
         player = GameObject.Find("First Person Player").GetComponent<Transform>();
         parent = GameObject.Find("Enemies").GetComponent<Transform>();
         
+        // load enemyFast from "Prefabs/Enemy Fast"
+        enemyFast = Resources.Load<Transform>("Prefabs/Enemy/Enemy Fast");
+        // load enemyNormal from "Prefabs/Enemy Normal"
+        enemyNormal = Resources.Load<Transform>("Prefabs/Enemy/Enemy Normal");
+        // load enemySlow from "Prefabs/Enemy Slow"
+        enemySlow = Resources.Load<Transform>("Prefabs/Enemy/Enemy Slow");
+
+        Assert.IsNotNull(enemyFast);
+        Assert.IsNotNull(enemyNormal);
+        Assert.IsNotNull(enemySlow);
+
         Assert.IsNotNull(player);
         Assert.IsNotNull(parent);
         
@@ -33,6 +44,8 @@ public class EnemySpawner : MonoBehaviour
         currentCoodlown = totalCooldown;
     }
 
+    private const float rangoSlow = 15, rangoNormal = 60;
+    
     void Update()
     {
         // Reduce cooldown if its not finished
@@ -41,15 +54,16 @@ public class EnemySpawner : MonoBehaviour
             currentCoodlown -= Time.deltaTime;
             return;
         }
-        
+
         bool generacionCorrecta = false;
-        Vector3 spawnPosition = new Vector3(0,0,0);
-        
+        Vector3 spawnPosition = new Vector3(0, 0, 0);
+
         while (!generacionCorrecta)
         {
             // Generate a random position based on spawnLimit1 and spawnLimit2
-            spawnPosition = new Vector3(Random.Range(spawnLimit1.x, spawnLimit2.x), Random.Range(spawnLimit1.y, spawnLimit2.y), Random.Range(spawnLimit1.z, spawnLimit2.z));
-            
+            spawnPosition = new Vector3(Random.Range(spawnLimit1.x, spawnLimit2.x),
+                Random.Range(spawnLimit1.y, spawnLimit2.y), Random.Range(spawnLimit1.z, spawnLimit2.z));
+
             Collider[] hitColliders = Physics.OverlapSphere(spawnPosition, 6.5f);
 
             // Check if spawnposition is not inside non spawnable area
@@ -62,6 +76,21 @@ public class EnemySpawner : MonoBehaviour
             }
         }
 
+        Transform enemyChosen;
+        
+        float randomRange = Random.Range(0, 100);
+        
+        if (randomRange < rangoSlow)
+            enemyChosen = enemySlow;
+        
+        else if (randomRange < rangoSlow + rangoNormal)
+            enemyChosen = enemyNormal;
+        
+        else
+            enemyChosen = enemyFast;
+        
+        // TODO | Add more possible random spawning arrangements
+        
         Vector3[] spawnPositionsFinal = {
             spawnPosition + new Vector3(1.56f,0,3.83f), 
             spawnPosition + new Vector3(4.1f,0,-1.1f), 
@@ -71,7 +100,7 @@ public class EnemySpawner : MonoBehaviour
         foreach (Vector3 spawnPositionFinal in spawnPositionsFinal)
         {
             // Create an enemy on the spawn position
-            Transform myEnemy = Instantiate(enemy, spawnPositionFinal, Quaternion.identity);
+            Transform myEnemy = Instantiate(enemyChosen, spawnPositionFinal, Quaternion.identity);
             myEnemy.parent = parent;
         }
         

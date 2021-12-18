@@ -7,8 +7,8 @@ using UnityEngine.Assertions;
 
 public class EnemyManager : MonoBehaviour
 {
-    public float totalLife = 4, shootingCooldown = 2f, movementSpeed = 7, damage = 1;  
-    
+    public float movementSpeed = 7, shootingCooldown = 2f, damage = 1, totalLife = 4;
+
     private const float animationTime = 0.7f, shootingRange = 1.5f;
     private float cooldownLeft, currenmtLife;
     

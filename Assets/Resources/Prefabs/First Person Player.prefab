@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3052702487429999725}
   - component: {fileID: 6526955068254154690}
   - component: {fileID: 295924815}
+  - component: {fileID: 8739709850090800918}
   m_Layer: 6
   m_Name: First Person Player
   m_TagString: Player
@@ -112,6 +113,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e7fdfe7a2087404bbb68157a5b31b64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!65 &8739709850090800918
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3052702487429999721}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.2556739, y: 2.3665822, z: 1.2031708}
+  m_Center: {x: -0.026251078, y: -0.68329096, z: 0.006772995}
 --- !u!1 &3052702488120236681
 GameObject:
   m_ObjectHideFlags: 0

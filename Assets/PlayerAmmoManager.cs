@@ -93,4 +93,9 @@ public class PlayerAmmoManager : MonoBehaviour
     {
         return currentAmmo > 0 && !reloading;
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Trigger contra: " + other.tag);
+    }
 }

@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1298264367807225877}
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0.291, y: 3.38, z: 0.145}
+  m_LocalPosition: {x: 0.291, y: 3.337, z: 0.145}
   m_LocalScale: {x: 50, y: 50, z: 50}
   m_Children: []
   m_Father: {fileID: 5785084962389787657}
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 5785084962389787657}
   m_Layer: 0
   m_Name: Ammo
-  m_TagString: Untagged
+  m_TagString: Ammo
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
