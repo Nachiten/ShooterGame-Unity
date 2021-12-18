@@ -3,14 +3,14 @@ using UnityEngine.Assertions;
 
 public class PlayerShooting : MonoBehaviour
 {
+    public float shootingRange = 50f;
+    
     private const float totalCooldown = 0.25f;
     private float cooldown;
 
     private bool isInCooldown;
     
     private Camera thisCamera;
-    public float shootingRange = 50f;
-    
     private PlayerAmmoManager ammoManager;
     
     void Start()

@@ -8,14 +8,4 @@ public class EnemyColliderManager : MonoBehaviour
     {
         transform.parent.GetComponent<EnemyManager>().takeDamage(damageTaken, direction);
     }
-    
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log("There hasbeen a trigger");
-    }
-    
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Debug.Log("There has been a colission");
-    }
 }

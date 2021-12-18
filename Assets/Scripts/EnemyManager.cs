@@ -9,7 +9,7 @@ public class EnemyManager : MonoBehaviour
 {
     public float totalLife = 4, shootingCooldown = 2f, movementSpeed = 7, damage = 1;  
     
-    private const float animationTime = 0.5f, shootingRange = 1.5f;
+    private const float animationTime = 0.7f, shootingRange = 1.5f;
     private float cooldownLeft, currenmtLife;
     
     private bool isInCooldown, destroyed;
@@ -73,8 +73,8 @@ public class EnemyManager : MonoBehaviour
         
         damageText.gameObject.SetActive(true);
 
-        // En 0.7 segundos muestro el texto
-        damageText.DOLocalMoveY(1.7f, animationTime)
+        // Show the text in animationTime seconds
+        damageText.DOLocalMoveY(4.93f, animationTime)
             .OnUpdate( () => setAlpha(damageText))
             .OnComplete( () => hideDamage(damageText));
     }
@@ -84,9 +84,10 @@ public class EnemyManager : MonoBehaviour
         if (destroyed)
             return;
 
-        float currentAlpha = 1 - Math.Abs((text.localPosition.y - 1.3f) / 0.5f);
+        // Calculate courrent alpha according to the distance to the center point
+        float currentAlpha = 1 - Math.Abs((text.localPosition.y - 4.09f) / 0.84f);
 
-        // El alpha se setea al modulo de la diferencia entre la posicion central y actual
+        // Alpha is set to the calculated value
         text.GetComponent<TextMeshPro>().alpha = currentAlpha;
     }
 
@@ -95,7 +96,7 @@ public class EnemyManager : MonoBehaviour
         if (destroyed)
             return;
         
-        // Se desactiva el objeto
+        // Destroy the text
         Destroy(theTransform.gameObject);
     }
 
@@ -106,14 +107,14 @@ public class EnemyManager : MonoBehaviour
         
         if (isInCooldown)
         {
-            // reduce cooldown
+            // Reduce cooldown
             cooldownLeft -= Time.deltaTime;
 
-            // return if there is cooldown remaining
+            // Return if there is cooldown remaining
             if (cooldownLeft > 0) 
                 return;
             
-            // reset cooldown if it finished
+            // Reset cooldown if it is finished
             isInCooldown = false;
 
             return;
@@ -127,6 +128,7 @@ public class EnemyManager : MonoBehaviour
 
         isInCooldown = true;
         cooldownLeft = shootingCooldown;
+        
         hit.collider.gameObject.GetComponent<PlayerLifeManager>().loseLife(damage);
     }
 }

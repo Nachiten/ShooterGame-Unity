@@ -1,13 +1,14 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+// ReSharper disable Unity.PreferNonAllocApi
 
 public class EnemySpawner : MonoBehaviour
 {
-    private float totalCooldown, currentCoodlown;
-    
-    private const float spawningDistance = 41;
-
     public Transform enemy;
+    
+    private float totalCooldown, currentCoodlown;
+    private const float spawningDistance = 41;
     
     private Transform player, parent;
     
@@ -49,9 +50,16 @@ public class EnemySpawner : MonoBehaviour
             // Generate a random position based on spawnLimit1 and spawnLimit2
             spawnPosition = new Vector3(Random.Range(spawnLimit1.x, spawnLimit2.x), Random.Range(spawnLimit1.y, spawnLimit2.y), Random.Range(spawnLimit1.z, spawnLimit2.z));
             
-            // Check if spawn is not too near to player
-            if (Vector3.Distance(player.position, spawnPosition) > spawningDistance)
+            Collider[] hitColliders = Physics.OverlapSphere(spawnPosition, 1.3f);
+
+            // Check if spawnposition is not inside non spawnable area
+            bool noCollisions = hitColliders.All(hitCollider => !hitCollider.gameObject.CompareTag("Non-Spawnable"));
+
+            // Check bool and distance from player
+            if (noCollisions && Vector3.Distance(player.position, spawnPosition) > spawningDistance)
+            {
                 generacionCorrecta = true;
+            }
         }
 
         // Create an enemy on the spawn position
