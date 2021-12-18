@@ -50,7 +50,7 @@ public class EnemySpawner : MonoBehaviour
             // Generate a random position based on spawnLimit1 and spawnLimit2
             spawnPosition = new Vector3(Random.Range(spawnLimit1.x, spawnLimit2.x), Random.Range(spawnLimit1.y, spawnLimit2.y), Random.Range(spawnLimit1.z, spawnLimit2.z));
             
-            Collider[] hitColliders = Physics.OverlapSphere(spawnPosition, 1.3f);
+            Collider[] hitColliders = Physics.OverlapSphere(spawnPosition, 6.5f);
 
             // Check if spawnposition is not inside non spawnable area
             bool noCollisions = hitColliders.All(hitCollider => !hitCollider.gameObject.CompareTag("Non-Spawnable"));
@@ -62,10 +62,19 @@ public class EnemySpawner : MonoBehaviour
             }
         }
 
-        // Create an enemy on the spawn position
-        Transform myEnemy = Instantiate(enemy, spawnPosition, Quaternion.identity);
-        myEnemy.parent = parent;
+        Vector3[] spawnPositionsFinal = {
+            spawnPosition + new Vector3(1.56f,0,3.83f), 
+            spawnPosition + new Vector3(4.1f,0,-1.1f), 
+            spawnPosition + new Vector3(-3.8f,0,-2.67f)
+        };
 
+        foreach (Vector3 spawnPositionFinal in spawnPositionsFinal)
+        {
+            // Create an enemy on the spawn position
+            Transform myEnemy = Instantiate(enemy, spawnPositionFinal, Quaternion.identity);
+            myEnemy.parent = parent;
+        }
+        
         generateRandomCooldown();
         
     }
