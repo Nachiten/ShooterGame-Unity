@@ -47,19 +47,16 @@ public class PlayerAmmoManager : MonoBehaviour
         finishReloading();
     }
 
+    private int ammoToReload = 0;
+    
     public void reload()
     {
         // The ammo im gonna to reload is magazineSize - currentAmmo or totalAmmo if there is less left
-        int ammoToReload = Mathf.Min(magazineSize - currentAmmo, totalAmmo);
+        ammoToReload = Mathf.Min(magazineSize - currentAmmo, totalAmmo);
 
         // If there is no ammo left or nothing to reload, return
         if (ammoToReload == 0)
             return;
-        
-        // Update current ammo to fill magazine
-        currentAmmo += ammoToReload;
-        // Update total ammo with ammo left over
-        totalAmmo -= ammoToReload;
         
         reloading = true;
         reloadingText.enabled = true;
@@ -68,6 +65,11 @@ public class PlayerAmmoManager : MonoBehaviour
     
     private void finishReloading()
     {
+        // Update current ammo to fill magazine
+        currentAmmo += ammoToReload;
+        // Update total ammo with ammo left over
+        totalAmmo -= ammoToReload;
+        
         // Update UI
         updateUI();
         
@@ -94,8 +96,9 @@ public class PlayerAmmoManager : MonoBehaviour
         return currentAmmo > 0 && !reloading;
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void addAmmo(int ammoAdded)
     {
-        Debug.Log("Trigger contra: " + other.tag);
+        totalAmmo += ammoAdded;
+        updateUI();
     }
 }
