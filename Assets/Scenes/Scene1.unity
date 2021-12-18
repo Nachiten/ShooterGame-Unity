@@ -7869,7 +7869,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 50, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -26622,6 +26622,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4112456910398210579, guid: 242afb9e1981a524d816bb8a1a53d05a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: bae96c4b97799c74aad1129c5835e76f, type: 2}
     - target: {fileID: 6053586916433616579, guid: 242afb9e1981a524d816bb8a1a53d05a, type: 3}
       propertyPath: m_Name
       value: Enemy Normal
