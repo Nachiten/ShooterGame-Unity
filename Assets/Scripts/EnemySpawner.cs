@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -6,7 +7,9 @@ public class EnemySpawner : MonoBehaviour
     
     private const float spawningDistance = 41;
 
-    private Transform enemy, player, parent;
+    public Transform enemy;
+    
+    private Transform player, parent;
     
     private readonly Vector3 spawnLimit1 = new Vector3(-100, 2, 100), spawnLimit2 = new Vector3(100, 2, -46);
 
@@ -14,10 +17,11 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
-        // load enemy from Prefabs/Enemy
-        enemy = (Resources.Load("Prefabs/Enemy") as GameObject)?.transform;
         player = GameObject.Find("First Person Player").GetComponent<Transform>();
         parent = GameObject.Find("Enemies").GetComponent<Transform>();
+        
+        Assert.IsNotNull(player);
+        Assert.IsNotNull(parent);
         
         generateRandomCooldown();
     }

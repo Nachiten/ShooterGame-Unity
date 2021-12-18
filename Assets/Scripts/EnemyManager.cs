@@ -2,13 +2,15 @@ using System;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Assertions;
 
 public class EnemyManager : MonoBehaviour
 {
-    private const float totalLifes = 4, shootingRange = 1.5f, totalCooldown = 2f, animationTime = 0.5f;
+    public float totalLife = 4, shootingCooldown = 2f, movementSpeed = 7, damage = 1;  
     
-    private float cooldownLeft, life;
+    private const float animationTime = 0.5f, shootingRange = 1.5f;
+    private float cooldownLeft, currenmtLife;
     
     private bool isInCooldown, destroyed;
 
@@ -25,19 +27,19 @@ public class EnemyManager : MonoBehaviour
     private void Start()
     {
         textTemplate.gameObject.SetActive(false);
-        life = totalLifes;
+        currenmtLife = totalLife;
+
+        GetComponent<NavMeshAgent>().speed = movementSpeed;
     }
 
     private const float moveTime = 0.5f, moveMultiplier = 0.8f;
 
     public void takeDamage(float damageTaken, Vector3 direction)
     {
-        Debug.Log("Take damage");
-
         // lose life
-        life-= damageTaken;
+        currenmtLife-= damageTaken;
         
-        if (life <= 0)
+        if (currenmtLife <= 0)
         {
             destroyed = true;
             
@@ -124,7 +126,7 @@ public class EnemyManager : MonoBehaviour
         Debug.DrawRay(transform.position, transform.forward * shootingRange, Color.red, 2f);
 
         isInCooldown = true;
-        cooldownLeft = totalCooldown;
-        hit.collider.gameObject.GetComponent<PlayerLifeManager>().loseLife(1);
+        cooldownLeft = shootingCooldown;
+        hit.collider.gameObject.GetComponent<PlayerLifeManager>().loseLife(damage);
     }
 }
