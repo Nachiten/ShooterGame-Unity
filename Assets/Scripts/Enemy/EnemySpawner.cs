@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public Transform enemyFast, enemyNormal, enemySlow;
+    //public Transform enemyFast, enemyNormal, enemySlow;
     
     private float totalCooldown, currentCoodlown;
     private const float spawningDistance = 41;
@@ -21,6 +21,7 @@ public class EnemySpawner : MonoBehaviour
         player = GameObject.Find("First Person Player").GetComponent<Transform>();
         parent = GameObject.Find("Enemies").GetComponent<Transform>();
         
+        /*
         // load enemyFast from "Prefabs/Enemy Fast"
         enemyFast = Resources.Load<Transform>("Prefabs/Enemy/Enemy Fast");
         // load enemyNormal from "Prefabs/Enemy Normal"
@@ -31,6 +32,7 @@ public class EnemySpawner : MonoBehaviour
         Assert.IsNotNull(enemyFast);
         Assert.IsNotNull(enemyNormal);
         Assert.IsNotNull(enemySlow);
+        */
 
         Assert.IsNotNull(player);
         Assert.IsNotNull(parent);
@@ -76,19 +78,17 @@ public class EnemySpawner : MonoBehaviour
             }
         }
 
-        Transform enemyChosen;
+        EnemyType enemyChosen;
         
         float randomRange = Random.Range(0, 100);
-        
-        if (randomRange < rangoSlow)
-            enemyChosen = enemySlow;
-        
-        else if (randomRange < rangoSlow + rangoNormal)
-            enemyChosen = enemyNormal;
-        
-        else
-            enemyChosen = enemyFast;
-        
+
+        enemyChosen = randomRange switch
+        {
+            < rangoSlow => EnemyType.Slow,
+            < rangoSlow + rangoNormal => EnemyType.Normal,
+            _ => EnemyType.Fast
+        };
+
         // TODO | Add more possible random spawning arrangements
         
         Vector3[] spawnPositionsFinal = {
@@ -100,7 +100,9 @@ public class EnemySpawner : MonoBehaviour
         foreach (Vector3 spawnPositionFinal in spawnPositionsFinal)
         {
             // Create an enemy on the spawn position
-            Transform myEnemy = Instantiate(enemyChosen, spawnPositionFinal, Quaternion.identity);
+            Transform myEnemy = ObjectPoolManager.instance.getObject(enemyChosen).GetComponent<Transform>();
+
+            myEnemy.position = spawnPositionFinal;
             myEnemy.parent = parent;
         }
         

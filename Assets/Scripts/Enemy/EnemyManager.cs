@@ -16,6 +16,8 @@ public class EnemyManager : MonoBehaviour
 
     private Transform textTemplate, player;
 
+    public EnemyType enemyType;
+    
     private void Awake()
     {
         textTemplate = transform.Find("Damage").GetComponent<Transform>();
@@ -46,6 +48,9 @@ public class EnemyManager : MonoBehaviour
             // Kill all animations asociated to this gameobject
             transform.DOKill();
 
+            // Return the enemy to the pool
+            ObjectPoolManager.instance.returnObject(gameObject, enemyType);
+            
             gameObject.SetActive(false);
             return;
         }
