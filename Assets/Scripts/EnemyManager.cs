@@ -46,7 +46,7 @@ public class EnemyManager : MonoBehaviour
             // Kill all animations asociated to this gameobject
             transform.DOKill();
 
-            Destroy(gameObject);
+            gameObject.SetActive(false);
             return;
         }
         
