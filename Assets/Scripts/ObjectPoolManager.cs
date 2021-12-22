@@ -1,12 +1,14 @@
 using System;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Pool;
 
-public enum EnemyType
+public enum ObjectType
 {
-    Normal,
-    Fast,
-    Slow
+    EnemyNormal,
+    EnemyFast,
+    EnemySlow,
+    Ammo
 }
 
 public class ObjectPoolManager : MonoBehaviour
@@ -25,43 +27,65 @@ public class ObjectPoolManager : MonoBehaviour
     public GameObject ammoPrefab;
     private ObjectPool<GameObject> ammoPool;
 
+    private GameObject ammoParent, enemyParent;
+    
     private const int defaultPoolSize = 20;
     private const int maxPoolSize = 50;
-    
+
     private void Awake()
     {
-        instance = this;
-
-        enemySlowPool = new ObjectPool<GameObject>(() =>   Instantiate(enemySlowPrefab), defaultCapacity:defaultPoolSize, maxSize:maxPoolSize);
-        enemyNormalPool = new ObjectPool<GameObject>(() => Instantiate(enemyNormalPrefab), defaultCapacity:defaultPoolSize, maxSize:maxPoolSize);
-        enemyFastPool = new ObjectPool<GameObject>(() =>   Instantiate(enemyFastPrefab), defaultCapacity:defaultPoolSize, maxSize:maxPoolSize);
+        if (instance == null)
+            instance = this;
+        else
+            Destroy(gameObject);
         
-        ammoPool = new ObjectPool<GameObject>(() => Instantiate(ammoPrefab), defaultCapacity:defaultPoolSize, maxSize:maxPoolSize);
+        Assert.IsNotNull(enemySlowPrefab);
+        Assert.IsNotNull(enemyNormalPrefab);
+        Assert.IsNotNull(enemyFastPrefab);
+        Assert.IsNotNull(ammoPrefab);
+        
+        enemyParent = GameObject.Find("Enemies");
+        ammoParent = GameObject.Find("Ammo");
+    }
+   
+    private void Start()
+    {
+        enemySlowPool = new ObjectPool<GameObject>(() =>   Instantiate(enemySlowPrefab, enemyParent.transform), defaultCapacity:defaultPoolSize, maxSize:maxPoolSize);
+        enemyNormalPool = new ObjectPool<GameObject>(() => Instantiate(enemyNormalPrefab, enemyParent.transform), defaultCapacity:defaultPoolSize, maxSize:maxPoolSize);
+        enemyFastPool = new ObjectPool<GameObject>(() =>   Instantiate(enemyFastPrefab, enemyParent.transform), defaultCapacity:defaultPoolSize, maxSize:maxPoolSize);
+        
+        ammoPool = new ObjectPool<GameObject>(() => Instantiate(ammoPrefab, ammoParent.transform), defaultCapacity:defaultPoolSize, maxSize:maxPoolSize);
     }
 
-    public GameObject getObject(EnemyType type)
+    public GameObject getObject(ObjectType type)
     {
         return type switch
         {
-            EnemyType.Normal => enemyNormalPool.Get(),
-            EnemyType.Fast => enemyFastPool.Get(),
-            EnemyType.Slow => enemySlowPool.Get(),
+            ObjectType.EnemyNormal => enemyNormalPool.Get(),
+            ObjectType.EnemyFast => enemyFastPool.Get(),
+            ObjectType.EnemySlow => enemySlowPool.Get(),
+            ObjectType.Ammo => ammoPool.Get(),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
 
-    public void returnObject(GameObject obj, EnemyType type)
+    public void returnObject(GameObject obj, ObjectType type)
     {
+        obj.SetActive(false);
+        
         switch (type)
         {
-            case EnemyType.Normal:
+            case ObjectType.EnemyNormal:
                 enemyNormalPool.Release(obj);
                 break;
-            case EnemyType.Fast:
+            case ObjectType.EnemyFast:
                 enemyFastPool.Release(obj);
                 break;
-            case EnemyType.Slow:
+            case ObjectType.EnemySlow:
                 enemySlowPool.Release(obj);
+                break;
+            case ObjectType.Ammo:
+                ammoPool.Release(obj);
                 break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(type), type, null);

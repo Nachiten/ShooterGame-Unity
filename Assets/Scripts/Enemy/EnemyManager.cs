@@ -10,26 +10,33 @@ public class EnemyManager : MonoBehaviour
     public float movementSpeed = 7, shootingCooldown = 2f, damage = 1, totalLife = 4;
 
     private const float animationTime = 0.7f, shootingRange = 1.5f;
-    private float cooldownLeft, currenmtLife;
+    private float cooldownLeft, currentLife;
     
     private bool isInCooldown, destroyed;
 
     private Transform textTemplate, player;
 
-    public EnemyType enemyType;
-    
+    public ObjectType objectType;
+
+    private void OnEnable()
+    {
+        currentLife = totalLife;
+        isInCooldown = false;
+        destroyed = false;
+    }
+
     private void Awake()
     {
         textTemplate = transform.Find("Damage").GetComponent<Transform>();
         player = GameObject.Find("First Person Player").transform;
         
         Assert.IsNotNull(textTemplate);
+        Assert.IsNotNull(player);
     }
 
     private void Start()
     {
         textTemplate.gameObject.SetActive(false);
-        currenmtLife = totalLife;
 
         GetComponent<NavMeshAgent>().speed = movementSpeed;
     }
@@ -39,19 +46,24 @@ public class EnemyManager : MonoBehaviour
     public void takeDamage(float damageTaken, Vector3 direction)
     {
         // lose life
-        currenmtLife-= damageTaken;
+        currentLife-= damageTaken;
         
-        if (currenmtLife <= 0)
+        if (currentLife <= 0)
         {
             destroyed = true;
             
             // Kill all animations asociated to this gameobject
             transform.DOKill();
-
-            // Return the enemy to the pool
-            ObjectPoolManager.instance.returnObject(gameObject, enemyType);
             
-            gameObject.SetActive(false);
+            // Generate ammo where the enemy was killed
+            GameObject ammo = ObjectPoolManager.instance.getObject(ObjectType.Ammo);
+
+            ammo.transform.position = new Vector3(transform.position.x, -0.007f, transform.position.z);
+            ammo.SetActive(true);
+            
+            // Return the enemy to the pool
+            ObjectPoolManager.instance.returnObject(gameObject, objectType);
+            
             return;
         }
         

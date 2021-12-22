@@ -5,38 +5,23 @@ using UnityEngine.Assertions;
 
 public class EnemySpawner : MonoBehaviour
 {
-    //public Transform enemyFast, enemyNormal, enemySlow;
-    
     private float totalCooldown, currentCoodlown;
     private const float spawningDistance = 41;
     
-    private Transform player, parent;
+    private Transform player;
     
-    private readonly Vector3 spawnLimit1 = new Vector3(-100, 2, 100), spawnLimit2 = new Vector3(100, 2, -46);
+    private readonly Vector3 spawnLimit1 = new(-100, 2, 100), spawnLimit2 = new(100, 2, -46);
 
-    public float randomMin = 4, randomMax = 8;
+    [SerializeField]
+    private float randomMin = 10, 
+                  randomMax = 15;
 
     void Start()
     {
         player = GameObject.Find("First Person Player").GetComponent<Transform>();
-        parent = GameObject.Find("Enemies").GetComponent<Transform>();
-        
-        /*
-        // load enemyFast from "Prefabs/Enemy Fast"
-        enemyFast = Resources.Load<Transform>("Prefabs/Enemy/Enemy Fast");
-        // load enemyNormal from "Prefabs/Enemy Normal"
-        enemyNormal = Resources.Load<Transform>("Prefabs/Enemy/Enemy Normal");
-        // load enemySlow from "Prefabs/Enemy Slow"
-        enemySlow = Resources.Load<Transform>("Prefabs/Enemy/Enemy Slow");
-
-        Assert.IsNotNull(enemyFast);
-        Assert.IsNotNull(enemyNormal);
-        Assert.IsNotNull(enemySlow);
-        */
 
         Assert.IsNotNull(player);
-        Assert.IsNotNull(parent);
-        
+
         generateRandomCooldown();
     }
 
@@ -73,20 +58,16 @@ public class EnemySpawner : MonoBehaviour
 
             // Check bool and distance from player
             if (noCollisions && Vector3.Distance(player.position, spawnPosition) > spawningDistance)
-            {
                 generacionCorrecta = true;
-            }
         }
 
-        EnemyType enemyChosen;
-        
         float randomRange = Random.Range(0, 100);
 
-        enemyChosen = randomRange switch
+        var objectChosen = randomRange switch
         {
-            < rangoSlow => EnemyType.Slow,
-            < rangoSlow + rangoNormal => EnemyType.Normal,
-            _ => EnemyType.Fast
+            < rangoSlow => ObjectType.EnemySlow,
+            < rangoSlow + rangoNormal => ObjectType.EnemyNormal,
+            _ => ObjectType.EnemyFast
         };
 
         // TODO | Add more possible random spawning arrangements
@@ -100,10 +81,10 @@ public class EnemySpawner : MonoBehaviour
         foreach (Vector3 spawnPositionFinal in spawnPositionsFinal)
         {
             // Create an enemy on the spawn position
-            Transform myEnemy = ObjectPoolManager.instance.getObject(enemyChosen).GetComponent<Transform>();
+            Transform myEnemy = ObjectPoolManager.instance.getObject(objectChosen).GetComponent<Transform>();
 
             myEnemy.position = spawnPositionFinal;
-            myEnemy.parent = parent;
+            myEnemy.gameObject.SetActive(true);
         }
         
         generateRandomCooldown();

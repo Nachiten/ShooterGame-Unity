@@ -18,9 +18,9 @@ public class PlayerAmmoManager : MonoBehaviour
     void Awake()
     {
         ammoText = GameObject.Find("Ammo Value").GetComponent<TMP_Text>();
-        Assert.IsNotNull(ammoText);
-        
         reloadingText = GameObject.Find("Reloading").GetComponent<TMP_Text>();
+        
+        Assert.IsNotNull(ammoText);
         Assert.IsNotNull(reloadingText);
     }
 
