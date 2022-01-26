@@ -69,6 +69,17 @@ public class ObjectPoolManager : MonoBehaviour
         };
     }
 
+    public bool noEnemiesLeftOf(ObjectType type)
+    {
+        return type switch
+        {
+            ObjectType.EnemyNormal => enemyNormalPool.CountActive == 0,
+            ObjectType.EnemyFast => enemyFastPool.CountActive == 0,
+            ObjectType.EnemySlow => enemySlowPool.CountActive == 0,
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
+    }
+
     public void returnObject(GameObject obj, ObjectType type)
     {
         obj.SetActive(false);

@@ -17,6 +17,8 @@ public class EnemyManager : MonoBehaviour
     private Transform textTemplate, player;
 
     public ObjectType objectType;
+    
+    private WavesManager wavesManager;
 
     private void OnEnable()
     {
@@ -29,15 +31,16 @@ public class EnemyManager : MonoBehaviour
     {
         textTemplate = transform.Find("Damage").GetComponent<Transform>();
         player = GameObject.Find("First Person Player").transform;
+        wavesManager = GameObject.Find("ObjectSpawner").GetComponent<WavesManager>();
         
         Assert.IsNotNull(textTemplate);
         Assert.IsNotNull(player);
+        Assert.IsNotNull(wavesManager);
     }
 
     private void Start()
     {
         textTemplate.gameObject.SetActive(false);
-
         GetComponent<NavMeshAgent>().speed = movementSpeed;
     }
 
@@ -63,6 +66,8 @@ public class EnemyManager : MonoBehaviour
             
             // Return the enemy to the pool
             ObjectPoolManager.instance.returnObject(gameObject, objectType);
+            
+            wavesManager.checkIfWaveIsOver();
             
             return;
         }

@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private const float minPlayerDistance = 41, spawningRadius = 6.5f;
+    private const float minPlayerDistance = 41f, spawningRadius = 6.5f;
     
     private Transform player;
     
@@ -17,6 +17,13 @@ public class EnemySpawner : MonoBehaviour
         player = GameObject.Find("First Person Player").GetComponent<Transform>();
 
         Assert.IsNotNull(player);
+    }
+
+    public bool noEnemiesLeft()
+    {
+        return ObjectPoolManager.instance.noEnemiesLeftOf(ObjectType.EnemyNormal) && 
+               ObjectPoolManager.instance.noEnemiesLeftOf(ObjectType.EnemyFast) && 
+               ObjectPoolManager.instance.noEnemiesLeftOf(ObjectType.EnemySlow);
     }
 
     public void spawnEnemies(ObjectType enemyType, int amount)
