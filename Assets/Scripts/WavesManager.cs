@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -5,17 +6,19 @@ using UnityEngine.Assertions;
 
 public class WavesManager : MonoBehaviour
 {
-    private int actualWaveNumber = 0;
+    // Current wave
+    private int currentWave = 0;
 
-    private int enemiesToSpawn = 5;
-    private float actualSpawnCooldown = 4f, totalSpawnCooldown = 4f;
+    private int enemiesToSpawn = 5, finalAttackEnemies = 5;
+    private float actualSpawnCooldown = 4f, totalSpawnCooldown = 4f, actualWaveCooldown = 0f;
     
-    private bool finalAttack, waveRunning, inCooldown;
-    private int finalAttackEnemies = 5;
+    private bool finalAttack = true, enemiesSpawning, inCooldown;
 
-    private const float totalWaveCooldown = 10f;
-    private float actualWaveCooldown = 0f;
+    // Random spawning ranges
+    private int fastRange, normalRange, oneRange, twoRange;
 
+    private const float animationTime = 1f, showTime = 2f, totalWaveCooldown = 10f;
+    
     private TMP_Text waveText;
 
     private EnemySpawner enemySpawner;
@@ -33,11 +36,18 @@ public class WavesManager : MonoBehaviour
 
         actualWaveCooldown = totalWaveCooldown;
         inCooldown = true;
+        
+        startWave(3);
+        startWave(4);
+        startWave(8);
+        startWave(10);
+        startWave(14);
+        startWave(22);
     }
 
     void Update()
     {
-        if (!waveRunning)
+        if (!enemiesSpawning)
         {
             if (!inCooldown)
                 return;
@@ -50,7 +60,7 @@ public class WavesManager : MonoBehaviour
             
             // Start next wave
             inCooldown = false;
-            startWave(actualWaveNumber + 1);
+            startWave(currentWave + 1);
 
             return;
         }
@@ -58,8 +68,8 @@ public class WavesManager : MonoBehaviour
         // No more enemies to spawn
         if (enemiesToSpawn <= 0)
         {
-            Debug.Log("No more enemies in wave " + actualWaveNumber + ".");
-            waveRunning = false;
+            Debug.Log("No more enemies in wave " + currentWave + ".");
+            enemiesSpawning = false;
             return;
         }
         
@@ -68,22 +78,54 @@ public class WavesManager : MonoBehaviour
         if (actualSpawnCooldown > 0) 
             return;
         
-        Debug.Log("Spawning enemy");
-        enemySpawner.spawnEnemies(ObjectType.EnemyNormal, 1);
+        spawnEnemyCluster();
+
         enemiesToSpawn--;
         actualSpawnCooldown = totalSpawnCooldown;
     }
-    
+
+    private void spawnEnemyCluster()
+    {
+        // Generate random number of enemies to spawn
+        int enemyAmountRandom = Random.Range(1, 101);
+        int enemyAmount = 3;
+        
+        if (enemyAmountRandom <= oneRange)
+            enemyAmount = 1;
+        else if (enemyAmountRandom <= oneRange + twoRange)
+            enemyAmount = 2;
+
+        // Generate random enemy type
+        int enemyTypeRandom = Random.Range(1, 101);
+        ObjectType enemyType = ObjectType.EnemySlow;
+        
+        if (enemyTypeRandom <= fastRange)
+            enemyType = ObjectType.EnemyFast;
+        else if (enemyTypeRandom <= fastRange + normalRange)
+            enemyType = ObjectType.EnemyNormal;
+
+        Debug.Log("Enemy spawned of type " + enemyType + ". Amount: " + enemyAmount + ".");
+        enemySpawner.spawnEnemies(enemyType, enemyAmount);
+    }
+
     public void checkIfWaveIsOver()
     {
         // Check if the wave is over, check if every enemy is killed
-        if (waveRunning || !enemySpawner.noEnemiesLeft())
+        if (enemiesSpawning || !enemySpawner.noEnemiesLeft())
             return;
         
-        // TODO - If final attack, spawn final attack enemies
-
+        if (finalAttack)
+        {
+            Debug.Log("Spawning final attack:");
+            for (int i = 0; i < finalAttackEnemies; i++)
+                spawnEnemyCluster();
+            
+            finalAttack = false;
+            return;
+        }
+        
         Debug.Log("Starting cooldown for next wave");
-        showWaveText("Wave " + actualWaveNumber + " ended");
+        showWaveText("Wave " + currentWave + " ended");
         // Start cooldown until next wave
         actualWaveCooldown = totalWaveCooldown;
         inCooldown = true;
@@ -93,15 +135,34 @@ public class WavesManager : MonoBehaviour
     {
         Debug.Log("Wave " + wave + " started");
         showWaveText("Wave " + wave + " started");
-        actualWaveNumber = wave;
+        currentWave = wave;
         
         // Enemy amount starts at 5
         enemiesToSpawn = wave + 4;
         
         // Spawn cooldown increments sligtly every 16 waves, decrements in the others
-        totalSpawnCooldown = 4 - 0.2f * (wave - 1) + 3.2f * Mathf.Floor(wave / 16);
+        totalSpawnCooldown = 4 - 0.2f * (wave - 1) + 3.2f * Mathf.FloorToInt((float)wave / 16);
         actualSpawnCooldown = totalSpawnCooldown;
+
+        calculateRanges(wave);
+
+        calculateFinalAttack(wave);
         
+        enemiesSpawning = true;
+
+        Debug.Log("Enemies to spawn: " + enemiesToSpawn + "\n" +
+                         "Spawn cooldown: " + totalSpawnCooldown + "\n" +
+                         "Final attack: " + finalAttack + "\n" +
+                         "Final attack enemies: " + finalAttackEnemies + "\n");
+        
+        Debug.Log("Fast range: " + fastRange + "\n" +
+                         "Normal range: " + normalRange + "\n" +
+                         "One range: " + oneRange + "\n" +
+                         "Two range: " + twoRange + "\n");
+    }
+
+    private void calculateFinalAttack(int wave)
+    {
         if (wave % 4 == 0)
         {
             finalAttack = true;
@@ -109,19 +170,19 @@ public class WavesManager : MonoBehaviour
             finalAttackEnemies = 5 * wave / 4;
         }
         else
-        {
             finalAttack = false;
-        }
-        
-        waveRunning = true;
-
-        Debug.Log("Enemies to spawn: " + enemiesToSpawn + "\n" +
-                         "Spawn cooldown: " + totalSpawnCooldown + "\n" +
-                         "Final attack: " + finalAttack + "\n" +
-                         "Final attack enemies: " + finalAttackEnemies + "\n");
     }
 
-    private const float animationTime = 1f, showTime = 2f;
+    private void calculateRanges(int wave)
+    {
+        fastRange = wave <= 7 ? (wave - 1) * 5 : 35;
+
+        normalRange = wave <= 10 ? 100 - (wave - 1) * 5 : 50;
+        
+        oneRange = wave <= 17 ? 95 - (wave - 1) * 5 : 10;
+
+        twoRange = wave <= 6 ? wave * 4 : 25;
+    }
     
     private void showWaveText(string text)
     {

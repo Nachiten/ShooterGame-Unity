@@ -3,7 +3,7 @@ using UnityEngine.Assertions;
 
 public class PlayerShooting : MonoBehaviour
 {
-    public float shootingRange = 50f;
+    private float shootingRange = 30f;
     
     private const float totalCooldown = 0.25f;
     private float cooldown;

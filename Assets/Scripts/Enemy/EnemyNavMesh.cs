@@ -3,7 +3,8 @@ using UnityEngine.AI;
 
 public class EnemyNavMesh : MonoBehaviour
 {
-    public float distanteToFollow = 70f;
+    private const float distanteToFollow = 45f;
+    
     private Transform player;
     
     // create navmesh agent

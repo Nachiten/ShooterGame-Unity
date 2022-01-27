@@ -6,16 +6,16 @@ using UnityEngine.Assertions;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private const float minPlayerDistance = 41f, spawningRadius = 6.5f;
+    private const float minPlayerDistance = 35f, maxPlayerDistance = 50f, spawningRadius = 6.5f;
     
     private Transform player;
     
-    private readonly Vector3 spawnLimit1 = new(-100, 2, 100), spawnLimit2 = new(100, 2, -46);
+    private readonly Vector3 spawnLimit1 = new(-100, 2, 100), 
+                             spawnLimit2 = new(100, 2, -46);
 
     void Start()
     {
         player = GameObject.Find("First Person Player").GetComponent<Transform>();
-
         Assert.IsNotNull(player);
     }
 
@@ -28,10 +28,9 @@ public class EnemySpawner : MonoBehaviour
 
     public void spawnEnemies(ObjectType enemyType, int amount)
     {
-        bool correctGeneration = false;
-        Vector3 spawnPosition = Vector3.zero;
+        Vector3 spawnPosition;
 
-        while (!correctGeneration)
+        while (true)
         {
             // Generate a random position based on spawnLimit1 and spawnLimit2
             spawnPosition = new Vector3(Random.Range(spawnLimit1.x, spawnLimit2.x),
@@ -42,9 +41,17 @@ public class EnemySpawner : MonoBehaviour
             // Check if spawnposition is not inside non spawnable area
             bool noCollisions = hitColliders.All(hitCollider => !hitCollider.gameObject.CompareTag("Non-Spawnable"));
 
-            // Check bool and distance from player
-            if (noCollisions && Vector3.Distance(player.position, spawnPosition) > minPlayerDistance)
-                correctGeneration = true;
+            float distanceToPlayer = Vector3.Distance(player.position, spawnPosition);
+
+            // Check distance to player
+            bool correctDistanceToPlayer = distanceToPlayer is > minPlayerDistance and < maxPlayerDistance;
+            
+            // Check collisions and distance to player
+            if (!noCollisions || !correctDistanceToPlayer) 
+                continue;
+            
+            //Debug.Log("Spawned " + amount + " enemies. " + "Distance to player: " + distanceToPlayer);
+            break;
         }
 
         // TODO | Add more possible random spawning arrangements
